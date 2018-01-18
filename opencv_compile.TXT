@@ -1,0 +1,45 @@
+# centos 6.x, opencv 3.4.0, python 3.6.4, ffmpeg 3.4.1
+
+# gcc
+scl enable devtoolset-3 bash
+
+# ffmpeg, shared
+check ffmpeg tips
+
+# python
+[gang@localhost Python-3.6.4]$ ./configure --prefix=/home/gang/python/install/ --enable-optimizations --enable-shared
+[gang@localhost Python-3.6.4]$ make
+[gang@localhost Python-3.6.4]$ make install
+
+[gang@localhost python-env]$ pwd
+/home/gang/python/python-env
+[gang@localhost python-env]$ ../install/bin/python3.6 -m venv python36
+[gang@localhost python-env]$ source python36/bin/activate
+(python36) [gang@localhost python-env]$ 
+
+(python36) [gang@localhost python-env]$ pip install numpy
+Collecting numpy
+  Downloading numpy-1.14.0-cp36-cp36m-manylinux1_x86_64.whl (17.2MB)
+    100% |████████████████████████████████| 17.2MB 96kB/s 
+Installing collected packages: numpy
+Successfully installed numpy-1.14.0
+(python36) [gang@localhost python-env]$ 
+
+
+# opencv
+mkdir build
+cd build
+
+(python36) [gang@localhost build]$ export LD_LIBRARY_PATH=/home/gang/python/install/lib/:/home/gang/ffmpeg/build/lib/; PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/home/gang/ffmpeg/build/lib/pkgconfig/ PKG_CONFIG_LIBDIR=$PKG_CONFIG_LIBDIR:/home/gang/ffmpeg/build/lib/ cmake -D CMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/gang/opencv/install -DBUILD_opencv_python2=OFF -D BUILD_opencv_python3=ON -D INSTALL_PYTHON_EXAMPLES=ON -DPYTHON_DEFAULT_EXECUTABLE=/home/gang/python/python-env/python36/bin/python -D PYTHON3_EXECUTABLE=/home/gang/python/install/bin/python3 -D PYTHON3_LIBRARY=/home/gang/python/install/lib/libpython3.6m.so -D PYTHON3_INCLUDE_DIR=/home/gang/python/install/include/python3.6m/ -D PYTHON3_PACKAGES_PATH=/home/gang/python/python-env/python36/lib/python3.6/site-packages/ -D PYTHON3_NUMPY_INCLUDE_DIRS=/home/gang/python/python-env/python36/lib/python3.6/site-packages/numpy/core/include/ /home/gang/opencv/opencv-3.4.0 
+
+(python36) [gang@localhost build]$ make -j7
+
+. running tests
+git clone https://github.com/opencv/opencv_extra.git
+export OPENCV_TEST_DATA_PATH=/home/gang/opencv/opencv_extra/
+(python36) [gang@localhost build]$ ./bin/opencv_test_core 
+
+
+
+
+
